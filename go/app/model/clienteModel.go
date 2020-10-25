@@ -5,6 +5,7 @@ import (
     "github.com/klassmann/cpfcnpj"
     "github.com/ggbr/gocsv/database"
     "fmt"
+    "strings"
     "database/sql"
   _ "github.com/lib/pq"
 
@@ -78,8 +79,8 @@ func ClienteNew(
 	cliente.PRIVATE   			    = private
 	cliente.INCOMPLETO   		    = imcompleto
 	cliente.DATA_ULTIMA_COMPRA      = data_ultima_compra
-	cliente.TICKET_MEDIO   		    = ticket_medio
-	cliente.TICKET_ULTIMA_COMPRA    = ticket_ultima_compra
+	cliente.TICKET_MEDIO   		    = strings.Replace(ticket_medio,",",".",1)
+	cliente.TICKET_ULTIMA_COMPRA    = strings.Replace(ticket_ultima_compra,",",".",1)
 	cliente.LOJA_MAIS_FREQUENTE     = cpfcnpj.Clean(loja_mais_frequente)
 	cliente.LOJA_DA_ULTIMA_COMPRA   = cpfcnpj.Clean(loja_da_ultima_compra)
     
@@ -133,8 +134,8 @@ func InsertClients(){
         }
         
         sqlStatement = sqlStatement[0:len(sqlStatement)-1]
+        sqlStatement = sqlStatement + ";"
         
-        fmt.Println(sqlStatement)
         database.Exec(sqlStatement)
 }
 

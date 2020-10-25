@@ -1,5 +1,6 @@
 import psycopg2
 
+import logging
 
 class Cliente:
   
@@ -7,12 +8,14 @@ class Cliente:
         pass
 
     def __del__(self,):
-        print("Encerar conexao")
+        logging.warning("Encerar conexao")
         self.cursor.close()
 
 
     def getConnection(self,):
         try:
+            logging.warning("nova conexao")
+
             self.connection = psycopg2.connect(user = "admin",
                                         password = "password",
                                         host = "postgres",
@@ -25,9 +28,10 @@ class Cliente:
             #cursor.execute("SELECT version();")
             #record = cursor.fetchone()
 
-        except (Exception, psycopg2.Error) as error :
-            print ("Error while connecting to PostgreSQL", error)
-        return None
+        except(Exception, psycopg2.Error) as error :
+            logging.warning("Error while connecting to PostgreSQL")
+                    
+            return None
 
     def createTable(self,):
 
@@ -43,20 +47,20 @@ class Cliente:
                 loja_mais_frequente varchar(60) null,
                 loja_da_ultima_compra varchar(60) null );'''
 
-        conexao = self.getConnection()
+        conexao = self.cursor
         
         if conexao == None:
-            print("Erro na conexao")
+            logging.warning("Erro na conexao")
             return None
 
         try:
             conexao.execute(query)
             self.connection.commit()
-            print("Table Clientes Criada")
+            logging.warning("Table Clientes Criada")
 
         except Exception as e:
-            print(e)
-            print("Erro na conexao")
+            logging.warning(e)
+            logging.warning("Erro ao criar tabela")
             return None
 
     
@@ -81,44 +85,55 @@ class Cliente:
                   '''+ str(cliente['cpf_valido']) +''',
                   '''+ str(cliente['private']) +''',
                   '''+ str(cliente['incompleto']) +''',
-                \''''+ str(cliente['data_ultima_compra']) +'''',
-                \''''+ str(cliente['ticket_medio']) +'''',
-                \''''+ str(cliente['ticket_ultima_compra']) +'''',
+                '''+ str(cliente['data_ultima_compra']) +''',
+                '''+ str(cliente['ticket_medio']) +''',
+                '''+ str(cliente['ticket_ultima_compra']) +''',
                 \''''+ str(cliente['loja_mais_frequente']) +'''',
                 \''''+ str(cliente['loja_da_ultima_compra']) +''''
             ),'''
         query = query[:-1] + ";"
 
-        conexao = self.getConnection()
+        conexao = self.cursor
+        
         if conexao == None:
-            print("Erro na conexao")
+            logging.warning("Erro na conexao")
             return None
 
         try:
             conexao.execute(query)
         except Exception as e:
-            print(e)
-            print("Erro na conexao")
+            logging.warning(e)
+            logging.warning("Erro na conexao")
             return None
     
-    def selectClientes(self, clientes):
-        query = '''SELECT * FROM clientes WHERE false;'''
+    def find(self, id):
        
-        conexao = self.getConnection()
-
-        if conexao == None:
-            print("Erro na conexao")
-            return None
+        conexao = self.cursor
+        logging.warning("Bunscando id no banco ...")
 
         try:
-            conexao.execute(query)
-            rows = conexao.fetchall()
-            print("The number of parts: ", conexao.rowcount)
-            for row in rows:
-                print(row)
+            conexao.execute("SELECT * FROM clientes WHERE  id=%(id)s;", {'id': id })
+
+            row = conexao.fetchall()
+            logging.warning(row)
+            row = row[0]
+            cliente = {
+                "id" : row[0],
+                "cpf": row[1],
+                "cpf_valido": row[2],
+                "private": row[3],
+                "incompleto": row[4],
+                "data_ultima_compra": row[5],
+                "ticket_medio" : row[6],
+                "ticket_ultima_compra" : row[7],
+                "loja_mais_frequente": row[8], 
+                "loja_da_ultima_compra" : row[9]
+            }
+            return cliente
+           
         except Exception as e:
-            print(e)
-            print("Erro na conexao")
+            logging.warning(e)
+            logging.warning("Erro na conexao")
             return None
 
     

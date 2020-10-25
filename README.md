@@ -1,62 +1,129 @@
+
 # Processar lista
+
+  
 
 Script para processar uma lista de clientes e salvar no banco de dados.
 
+  
+
 O problema foi resolvido de duas formas diferente usando a linguagem **go** e **python** mas mantendo o mesmo fluxo abaixo.
 
+  
+  
 
 ## Fulxo do programa
+
 ```mermaid
+
 graph TD
-A[Iniciar banco de dados]  --> B[Criar tabela de clientes]
+
+A[Iniciar banco de dados] --> B[Criar tabela de clientes]
+
 B --> C[Processar os dados do arquivo]
+
 C --> D[Tratar os dados validar CPF e remover Caracteres]
+
 D --> E[Criar query SQL e insere no banco]
+
 E --> F[Expõe uma API de acesso aos dados]
+
 ```
 
+  
+
 ## Teste escrito em Python
+
 O projeto esta dentro do diretorio **python**
 
-> cd  ./python
+  
 
+> cd ./python
 
-o projeto pode ser iniciado com o comando 
+  
+  
+
+o projeto pode ser iniciado com o comando
+
+  
 
     make install
-ou 
+
+ou
+
+  
 
     docker-compose up
 
+Quando chegar na ultima etapa sera exposta uma API no seguinte endereço
+
+    http://127.0.0.1:82/cliente/1
+
+  
+  
+  
+
 ### Outros comandos
+
+  
 
 para reiniciar o projeto do zero (compilando e sem nada no banco de dados)
 
+  
+
     make reset
+
 Acessar o terminal do container da aplicação
 
+  
+
     make bash
+
+  
 
 ## Teste escrito em GO
 
+  
+
 O projeto esta dentro do diretorio **go**
 
-> cd  ./go
+  
 
-o projeto pode ser iniciado com o comando 
+> cd ./go
+
+  
+
+o projeto pode ser iniciado com o comando
+
+  
 
     make install
-ou 
+
+ou
+
+  
 
     docker-compose up
 
+  
+
+Apos os dados processados, eles podem ser consultados pela rota 
+
+`http://localhost:81/cliente/1`
+
 ### Outros comandos
+
+  
 
 para reiniciar o projeto do zero (compilando e sem nada no banco de dados)
 
+  
+
     make reset
+
 Acessar o terminal do container da aplicação
 
-    make bash
+  
 
+    make bash
 

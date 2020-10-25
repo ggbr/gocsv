@@ -15,4 +15,4 @@ ADD . /app
 
 EXPOSE 5000
 
-CMD [ "python3", "start.py" ]
+CMD [ "flask", "run", "--host=0.0.0.0" ]
