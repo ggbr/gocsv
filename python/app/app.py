@@ -8,28 +8,28 @@ from flask import jsonify
 from validate_docbr import CPF
 
 # a pausa é feita para que de tempo do postgres no docker subir
-logging.info("Esperando o banco de dados iniciar ...")
+logging.warning("Esperando o banco de dados iniciar ...")
 time.sleep(10)
 
 
 # assim que a classe Cleinte é instanciada conecta com o banco
-logging.info("Connectando com o banco ...")
+logging.warning("Connectando com o banco ...")
 clienteModel = Cliente.Cliente()
 
 
 #o metodo createTable funciona como o migrate de banco
-logging.info("Criando tabelas ...")
+logging.warning("Criando tabelas ...")
 clienteModel.createTable()
 
 
 # Todos os parametros usados para a leitura do CSV são pasados 
 # para o Lib do Pandas
-logging.info("lendo file.csv ...")
+logging.warning("lendo file.csv ...")
 df = pd.read_csv('file.csv', sep='\t', error_bad_lines=False)
 
 
 #Aqui os dados são processados (retirado caracters e convertido valores)
-logging.info("Processando dados ...")
+logging.warning("Processando dados ...")
 lista = df.values
 matrix_clientes = []
 for row in lista:
@@ -60,12 +60,12 @@ for row in lista:
     
 
 # Os dados são salvos no banco usando a mesma conexao ja criada anteriormente
-logging.info("Salvando dados no banco ...")
+logging.warning("Salvando dados no banco ...")
 clienteModel.insertClientes(matrix_clientes)
 
 
 #sobe um servidor usando o framework flask, expondo 2 rotas
-logging.info("Iniciando servidor web...")
+logging.warning("Iniciando servidor web...")
 app = Flask(__name__)
 
 @app.route('/')
@@ -74,7 +74,7 @@ def home():
 
 @app.route('/cliente/<id>')
 def getCliente(id):
-    logging.info(">>>>>")
+    logging.warning(">>>>>")
     cli = clienteModel.find(id)
-    logging.info(cli)
+    logging.warning(cli)
     return jsonify(cli)

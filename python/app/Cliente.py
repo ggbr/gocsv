@@ -59,7 +59,7 @@ class Cliente:
         try:
             conexao.execute(query)
             self.connection.commit()
-            logging.info(">Table Clientes Criada")
+            logging.warning(">Table Clientes Criada")
 
         except Exception as e:
             logging.warning("Erro ao executar a query")

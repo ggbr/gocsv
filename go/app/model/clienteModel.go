@@ -164,7 +164,7 @@ func Find(id int) Cliente{
 
     query  := `SELECT * FROM clientes WHERE id = $1` 
 
-    err = db.QueryRow(query, 1).Scan(
+    err = db.QueryRow(query, id).Scan(
                                     &cliente.ID,
                                     &cliente.CPF,
                                     &cliente.CPF_VALIDO,
