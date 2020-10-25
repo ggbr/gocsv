@@ -1,0 +1,23 @@
+version: "3"
+services:
+  app:
+    build: ./app
+    ports:
+      - "82:5000"
+    networks:
+      - app
+
+  postgres:
+      image: postgres
+      environment:
+        POSTGRES_DB: "data"
+        POSTGRES_USER: "admin"
+        POSTGRES_PASSWORD: "password"
+      logging:
+        driver: none 
+      networks:
+        - app
+    
+networks: 
+  app:
+    driver: bridge
