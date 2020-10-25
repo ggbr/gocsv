@@ -1,19 +1,24 @@
 import psycopg2
 import logging
 
-
-
-
 class Cliente:
-  
+    
     def __init__(self,):
+        self.getConnection()
         pass
 
+
+    ''' Destrutor da classe
+            
+        Enserra a conexao com o banco quando o programa para
+    '''
     def __del__(self,):
         logging.warning("Encerar conexao com banco de dados...")
         self.cursor.close()
 
 
+    
+    # Cria uma conexao unica com o banco para ser usado em todas as querys
     def getConnection(self,):
         try:
             logging.warning("nova conexao")
