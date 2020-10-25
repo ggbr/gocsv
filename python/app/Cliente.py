@@ -1,6 +1,8 @@
 import psycopg2
-
 import logging
+
+
+
 
 class Cliente:
   
@@ -8,7 +10,7 @@ class Cliente:
         pass
 
     def __del__(self,):
-        logging.warning("Encerar conexao")
+        logging.warning("Encerar conexao com banco de dados...")
         self.cursor.close()
 
 
@@ -24,14 +26,10 @@ class Cliente:
 
             self.cursor = self.connection.cursor()
 
-            return self.cursor
-            #cursor.execute("SELECT version();")
-            #record = cursor.fetchone()
 
         except(Exception, psycopg2.Error) as error :
-            logging.warning("Error while connecting to PostgreSQL")
-                    
-            return None
+            logging.warning("Erro ao conectar no banco")
+            self.cursor = None
 
     def createTable(self,):
 
@@ -50,17 +48,17 @@ class Cliente:
         conexao = self.cursor
         
         if conexao == None:
-            logging.warning("Erro na conexao")
+            logging.warning("Erro de conexao com o banco")
             return None
 
         try:
             conexao.execute(query)
             self.connection.commit()
-            logging.warning("Table Clientes Criada")
+            logging.info(">Table Clientes Criada")
 
         except Exception as e:
+            logging.warning("Erro ao executar a query")
             logging.warning(e)
-            logging.warning("Erro ao criar tabela")
             return None
 
     
@@ -96,24 +94,21 @@ class Cliente:
         conexao = self.cursor
         
         if conexao == None:
-            logging.warning("Erro na conexao")
+            logging.warning("Erro de conexao com o banco")
             return None
 
         try:
             conexao.execute(query)
         except Exception as e:
+            logging.warning("Erro ao executar a query")
             logging.warning(e)
-            logging.warning("Erro na conexao")
             return None
     
     def find(self, id):
-       
         conexao = self.cursor
         logging.warning("Bunscando id no banco ...")
-
         try:
             conexao.execute("SELECT * FROM clientes WHERE  id=%(id)s;", {'id': id })
-
             row = conexao.fetchall()
             logging.warning(row)
             row = row[0]
@@ -132,8 +127,8 @@ class Cliente:
             return cliente
            
         except Exception as e:
+            logging.warning("Erro ao executar a query")
             logging.warning(e)
-            logging.warning("Erro na conexao")
             return None
 
     

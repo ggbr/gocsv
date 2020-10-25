@@ -6,21 +6,24 @@ from flask import Flask
 import logging
 from flask import jsonify
 from validate_docbr import CPF
-cpf = CPF()
 
-logging.warning("Esperando o banco de dados iniciar ...")
+
+
+logging.info("Esperando o banco de dados iniciar ...")
 time.sleep(10)
 
+logging.info("Connectando com o banco ...")
 clienteModel = Cliente.Cliente()
 clienteModel.getConnection()
+
+logging.info("Criando tabelas ...")
 clienteModel.createTable()
 
-logging.warning("lendo file.csv ...")
-
+logging.info("lendo file.csv ...")
 df = pd.read_csv('file.csv', sep='\t', error_bad_lines=False)
 
+logging.info("Processando dados ...")
 lista = df.values
-
 matrix_clientes = []
 for row in lista:
     cpf = CPF()
@@ -48,21 +51,22 @@ for row in lista:
 
     matrix_clientes.append(cliente)
     
-logging.warning("Processar file.csv ...")
+logging.info("Salvando dados no banco ...")
 clienteModel.insertClientes(matrix_clientes)
 
-logging.warning("Iniciando servidor web...")
+
+logging.info("Iniciando servidor web...")
 app = Flask(__name__)
 
 @app.route('/')
-def hello_world():
-    return 'Hello, World!'
+def home():
+    return 'http://127.0.0.1:82/cliente/1'
 
 @app.route('/cliente/<id>')
 def getCliente(id):
-    logging.warning(">>>>>")
+    logging.info(">>>>>")
 
     cli = clienteModel.find(id)
-    logging.warning(cli)
+    logging.info(cli)
 
     return jsonify(cli)
